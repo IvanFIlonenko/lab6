@@ -147,12 +147,15 @@ public class Server extends AllDirectives {
                                             e.printStackTrace();
                                             return complete("Error:" + e);
                                         }
+                                        return complete("Error:");
                                     }
-                                    try {
-                                        return complete(requestToWebSite(url).toCompletableFuture().get());
-                                    } catch (InterruptedException | ExecutionException e) {
-                                        e.printStackTrace();
-                                        return complete("Error:" + e);
+                                    else {
+                                        try {
+                                            return complete(requestToWebSite(url).toCompletableFuture().get());
+                                        } catch (InterruptedException | ExecutionException e) {
+                                            e.printStackTrace();
+                                            return complete("Error:" + e);
+                                        }
                                     }
                                 }))
                 )
