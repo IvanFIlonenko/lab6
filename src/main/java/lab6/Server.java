@@ -136,7 +136,6 @@ public class Server extends AllDirectives {
                                     int countNumber = Integer.parseInt(count);
                                     System.out.println("Request got from " + PORT + "count = " + count);
                                     if (countNumber != 0) {
-                                        System.out.println("Request got from " + PORT + "count = " + count);
                                         try {
                                             Future<Object> randomPort = Patterns.ask(Storage, new PortRandomizer(Integer.toString(PORT)), 5000);
                                             if (randomPort.isCompleted()){
