@@ -1,6 +1,7 @@
 package lab6;
 
 import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
 import akka.japi.pf.ReceiveBuilder;
 
 import javax.sound.sampled.Port;
@@ -15,7 +16,11 @@ public class Storage extends AbstractActor {
             serverPorts = msg.getServerPorts();
         }).match(PortRandomizer.class, msg ->{
             Random random = new Random();
-            
-        })
+            int randomIndex = random.nextInt(serverPorts.size());
+            while (serverPorts.get(randomIndex).equals(msg.getPort())){
+                randomIndex = random.nextInt(serverPorts.size());
+            }
+            getSender().tell(Integer.parseInt(serverPorts.get(randomIndex)), ActorRef.noSender());
+        }).build();
     }
 }
