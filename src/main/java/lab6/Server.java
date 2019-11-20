@@ -17,6 +17,7 @@ import akka.stream.javadsl.Flow;
 import org.apache.zookeeper.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
@@ -47,7 +48,7 @@ public class Server extends AllDirectives {
             @Override
             public void process(WatchedEvent event) {
                 if (event.getType() == Event.EventType.NodeChildrenChanged){
-                    List<String> se
+                    List<String> serverPorts = new ArrayList<>();
                 }
             }
         })
