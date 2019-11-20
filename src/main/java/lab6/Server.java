@@ -45,7 +45,7 @@ public class Server extends AllDirectives {
         zoo.getChildren("/servers", new Watcher() {
             @Override
             public void process(WatchedEvent event) {
-                if (event.getType())
+                if (event.getType() == Event.EventType)
             }
         })
     }
