@@ -8,6 +8,7 @@ import akka.http.javadsl.Http;
 import akka.http.javadsl.ServerBinding;
 import akka.http.javadsl.model.HttpRequest;
 import akka.http.javadsl.model.HttpResponse;
+import akka.http.javadsl.server.Route;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 import org.apache.zookeeper.CreateMode;
@@ -23,7 +24,7 @@ public class Main {
     private static ZooKeeper zoo;
     private static final String ROUTES = "routes";
     private static final String LOCALHOST = "localhost";
-    private static final String SERVER_INFO = ""
+    private static final String SERVER_INFO = "\"Server online at http://localhost:8080/\\nPress RETURN to stop...\"";
     private static Http http;
 
     private static void createZoo(int port) throws IOException, KeeperException, InterruptedException {
@@ -64,5 +65,9 @@ public class Main {
                 .thenCompose(ServerBinding::unbind)
                 .thenAccept(unbound -> system.terminate());
 
+    }
+
+    private Route route(){
+        
     }
 }
