@@ -96,8 +96,15 @@ public class Server extends AllDirectives {
     CompletionStage<HttpResponse> requestToServer(int port, String url, int count){
         try{
             return http.singleRequest(
-                    HttpRequest
-            )
+                    HttpRequest.create("http://localhost:" + Integer.toString(port) + "/?url=" + url + "&count=" + Integer.toString(count - 1)));
+        } catch (Exception e){
+            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error:" + e));
+        }
+    }
+
+    CompletionStage<HttpResponse> requestToWebSite(String url){
+        try{
+            return http.singleRequest(Http)
         }
     }
 }
