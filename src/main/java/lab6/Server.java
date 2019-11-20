@@ -59,12 +59,16 @@ public class Server extends AllDirectives {
                         byte[] port = new byte[0];
                         try{
                             port = zoo.getData("/servers/" + s, false, null);
-                            
+                        } catch (InterruptedException | KeeperException e) {
+                            e.printStackTrace();
                         }
+                        serverPorts.add(new String(port));
                     }
+                    Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
                 }
+                process(event);
             }
-        })
+        });
     }
 
     public static void main(String[] args) throws InterruptedException, IOException, KeeperException {
