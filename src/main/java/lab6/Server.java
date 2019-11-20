@@ -35,7 +35,35 @@ public class Server extends AllDirectives {
         zoo = new ZooKeeper(
                 "127.0.0.1:2181",
                 2000,
-                a -> {}
+                new Watcher() {
+                    @Override
+                    public void process(WatchedEvent event) {
+                        List<String> servers = new ArrayList<>();
+                        try{
+                            servers = zoo.getChildren("/servers", true);
+                        } catch (InterruptedException | KeeperException  e) {
+                            e.printStackTrace();
+                        }
+                        List<String> serverPorts = new ArrayList<>();
+                        for (String s: servers) {
+                            byte[] port = new byte[0];
+                            try{
+                                port = zoo.getData("/servers/" + s, false, null);
+                            } catch (InterruptedException | KeeperException e) {
+                                e.printStackTrace();
+                            }
+                            serverPorts.add(new String(port));
+                        }
+                        System.out.println(serverPorts.size());
+                        Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
+                        try {
+                            TimeUnit.SECONDS.sleep(3);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        process(event);
+                    }
+                }
         );
         zoo.create("/servers/" + port,
                 Integer.toString(port).getBytes(),
@@ -75,12 +103,12 @@ public class Server extends AllDirectives {
     public static void main(String[] args) throws InterruptedException, IOException, KeeperException {
         Scanner in = new Scanner(System.in);
         PORT = in.nextInt();
+        ActorSystem system = ActorSystem.create(ROUTES);
+        Storage = system.actorOf(Props.create(Storage.class));
 
         createZoo(PORT);
 
-        ActorSystem system = ActorSystem.create(ROUTES);
         http = Http.get(system);
-        Storage = system.actorOf(Props.create(Storage.class));
         final ActorMaterializer materializer = ActorMaterializer.create(system);
 
         Server app = new Server();
