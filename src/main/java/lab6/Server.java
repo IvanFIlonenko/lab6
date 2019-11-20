@@ -140,7 +140,7 @@ public class Server extends AllDirectives {
                                             Future<Object> randomPort = Patterns.ask(Storage, new PortRandomizer(Integer.toString(PORT)), 5000);
                                             while (!randomPort.isCompleted());
                                                 System.out.println(randomPort);
-                                                System.out.println(randomPort.value());
+                                                System.out.println(randomPort);
                                                 return complete(requestToServer(Integer.parseInt(randomPort.toString()), url, countNumber).toCompletableFuture().get());
 
                                         } catch (InterruptedException| ExecutionException e){
