@@ -9,6 +9,8 @@ public class Storage extends AbstractActor {
     List<String> serverPorts;
 
     public Receive createReceive() {
-        return ReceiveBuilder.create().match()
+        return ReceiveBuilder.create().match(ServerMessage.class, msg->{
+            serverPorts = msg.getServerPorts();
+        }).match()
     }
 }
