@@ -104,7 +104,9 @@ public class Server extends AllDirectives {
 
     CompletionStage<HttpResponse> requestToWebSite(String url){
         try{
-            return http.singleRequest(Http)
+            return http.singleRequest(HttpRequest.create(url));
+        }catch (Exception e){
+            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error:" + e));
         }
     }
 }
