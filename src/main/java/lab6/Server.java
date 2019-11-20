@@ -48,7 +48,20 @@ public class Server extends AllDirectives {
             @Override
             public void process(WatchedEvent event) {
                 if (event.getType() == Event.EventType.NodeChildrenChanged){
+                    List<String> servers = new ArrayList<>();
+                    try{
+                        servers = zoo.getChildren("/servers", true);
+                    } catch (InterruptedException | KeeperException  e) {
+                        e.printStackTrace();
+                    }
                     List<String> serverPorts = new ArrayList<>();
+                    for (String s: servers) {
+                        byte[] port = new byte[0];
+                        try{
+                            port = zoo.getData("/servers/" + s, false, null);
+                            
+                        }
+                    }
                 }
             }
         })
