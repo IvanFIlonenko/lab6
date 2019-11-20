@@ -14,10 +14,7 @@ import akka.http.javadsl.server.Route;
 import akka.pattern.Patterns;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
-import org.apache.zookeeper.CreateMode;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.ZooKeeper;
+import org.apache.zookeeper.*;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -45,6 +42,12 @@ public class Server extends AllDirectives {
                 Integer.toString(port).getBytes(),
                 ZooDefs.Ids.OPEN_ACL_UNSAFE,
                 CreateMode.EPHEMERAL_SEQUENTIAL);
+        zoo.getChildren("/servers", new Watcher() {
+            @Override
+            public void process(WatchedEvent event) {
+                if (event.getType())
+            }
+        })
     }
 
     public static void main(String[] args) throws InterruptedException, IOException, KeeperException {
