@@ -132,7 +132,7 @@ public class Server extends AllDirectives {
             return http.singleRequest(
                     HttpRequest.create("http://localhost:" + port + "/?url=" + url + "&count=" + (count - 1)));
         } catch (Exception e){
-            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error:" + e));
+            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error121212:" + e));
         }
     }
 
@@ -140,7 +140,7 @@ public class Server extends AllDirectives {
         try{
             return http.singleRequest(HttpRequest.create(url));
         }catch (Exception e){
-            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error:" + e));
+            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error3333333333:" + e));
         }
     }
 }
