@@ -15,7 +15,9 @@ import akka.pattern.Patterns;
 import akka.stream.ActorMaterializer;
 import akka.stream.javadsl.Flow;
 import org.apache.zookeeper.*;
+import scala.concurrent.Await;
 import scala.concurrent.Future;
+import scala.concurrent.duration.Duration;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -138,6 +140,7 @@ public class Server extends AllDirectives {
                                     if (countNumber != 0) {
                                         try {
                                             Future<Object> randomPort = Patterns.ask(Storage, new PortRandomizer(Integer.toString(PORT)), 5000);
+                                            Await.result(randomPort, Duration.create())
                                             while (!randomPort.isCompleted());
                                                 System.out.println(randomPort);
                                                 System.out.println(randomPort);
