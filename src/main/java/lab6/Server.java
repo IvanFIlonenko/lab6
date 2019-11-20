@@ -81,7 +81,7 @@ public class Server extends AllDirectives {
         http = Http.get(system);
         Storage = system.actorOf(Props.create(Storage.class));
         final ActorMaterializer materializer = ActorMaterializer.create(system);
-
+        System.out.println("1");
         Server app = new Server();
 
         final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = app.route().flow(system, materializer);
