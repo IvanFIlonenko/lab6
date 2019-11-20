@@ -140,7 +140,7 @@ public class Server extends AllDirectives {
                                     if (countNumber != 0) {
                                         try {
                                             Future<Object> randomPort = Patterns.ask(Storage, new PortRandomizer(Integer.toString(PORT)), 5000);
-                                            Await.result(randomPort, Duration.create())
+                                            Await.result(randomPort, Duration.create(5, TimeUnit.SECONDS));
                                             while (!randomPort.isCompleted());
                                                 System.out.println(randomPort);
                                                 System.out.println(randomPort);
@@ -149,6 +149,8 @@ public class Server extends AllDirectives {
                                         } catch (InterruptedException| ExecutionException e){
                                             e.printStackTrace();
                                             return complete("Error:" + e);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
                                         }
                                     }
                                     else {
