@@ -95,7 +95,9 @@ public class Server extends AllDirectives {
 
     CompletionStage<HttpResponse> requestToServer(int port, String url, int count){
         try{
-            return 
+            return http.singleRequest(
+                    HttpRequest
+            )
         }
     }
 }
