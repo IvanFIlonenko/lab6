@@ -41,7 +41,7 @@ public class Server extends AllDirectives {
                 2000,
                 a -> {}
         );
-        zoo.create("/servers/" + Integer.toString(port),
+        zoo.create("/servers/" + port,
                 Integer.toString(port).getBytes(),
                 ZooDefs.Ids.OPEN_ACL_UNSAFE,
                 CreateMode.EPHEMERAL_SEQUENTIAL);
@@ -82,7 +82,7 @@ public class Server extends AllDirectives {
                         () -> parameter("url", url ->
                                 parameter("count", count -> {
                                     int countNumber = Integer.parseInt(count);
-                                    System.out.println("Request got from " + Integer.toString(PORT) + "count = " + count);
+                                    System.out.println("Request got from " + PORT + "count = " + count);
                                     if (countNumber != 0) {
                                         try {
                                             Future<Object> randomPort = CompletableFuture.completedFuture(Patterns.ask(Storage, new PortRandomizer(Integer.toString(PORT)), 5000));
@@ -106,7 +106,7 @@ public class Server extends AllDirectives {
     CompletionStage<HttpResponse> requestToServer(int port, String url, int count){
         try{
             return http.singleRequest(
-                    HttpRequest.create("http://localhost:" + Integer.toString(port) + "/?url=" + url + "&count=" + Integer.toString(count - 1)));
+                    HttpRequest.create("http://localhost:" + port + "/?url=" + url + "&count=" + (count - 1)));
         } catch (Exception e){
             return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error:" + e));
         }
