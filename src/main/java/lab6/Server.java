@@ -44,7 +44,6 @@ public class Server extends AllDirectives {
         zoo.getChildren("/servers", new Watcher() {
             @Override
             public void process(WatchedEvent event) {
-                if (event.getType() == Event.EventType.NodeChildrenChanged){
                     List<String> servers = new ArrayList<>();
                     try{
                         servers = zoo.getChildren("/servers", true);
@@ -63,7 +62,6 @@ public class Server extends AllDirectives {
                     }
                     System.out.println(serverPorts.size());
                     Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
-                }
                 try {
                     TimeUnit.SECONDS.sleep(3);
                 } catch (InterruptedException e) {
