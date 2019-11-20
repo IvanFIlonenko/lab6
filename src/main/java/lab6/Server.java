@@ -20,10 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class Server extends AllDirectives {
     private static int PORT;
@@ -65,6 +62,11 @@ public class Server extends AllDirectives {
                         serverPorts.add(new String(port));
                     }
                     Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
+                }
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 process(event);
             }
