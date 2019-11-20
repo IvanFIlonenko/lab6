@@ -132,8 +132,8 @@ public class Server extends AllDirectives {
                                     System.out.println("Request got from " + PORT + "| Count = " + count);
                                     if (countNumber != 0) {
                                         try {
-                                            Future<Object> randomPort = Patterns.ask(Storage, new PortRandomizer(Integer.toString(PORT)), 5000);
-                                            int reply = (int) Await.result(randomPort, Duration.create(5, TimeUnit.SECONDS));
+                                            Future<Object> randomPort = Patterns.ask(Storage, new PortRandomizer(Integer.toString(PORT)), 20000);
+                                            int reply = (int) Await.result(randomPort, Duration.create(20, TimeUnit.SECONDS));
                                             return complete(requestToServer(reply, url, countNumber).toCompletableFuture().get());
                                         } catch (Exception e) {
                                             e.printStackTrace();
