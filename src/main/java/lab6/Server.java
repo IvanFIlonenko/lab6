@@ -61,6 +61,7 @@ public class Server extends AllDirectives {
                         }
                         serverPorts.add(new String(port));
                     }
+                    System.out.println(serverPorts.size());
                     Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
                 }
                 try {
