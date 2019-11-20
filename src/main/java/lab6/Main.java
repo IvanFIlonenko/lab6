@@ -68,7 +68,10 @@ public class Main {
     }
 
     private Route route(){
-
-
+        try {
+            synchronized (this) {
+                while(!)
+            }
+        }
     }
 }
