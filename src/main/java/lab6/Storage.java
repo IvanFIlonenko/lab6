@@ -1,4 +1,10 @@
 package lab6;
 
-public class Storage {
+import akka.actor.AbstractActor;
+
+public class Storage extends AbstractActor {
+    @Override
+    public Receive createReceive() {
+        return null;
+    }
 }

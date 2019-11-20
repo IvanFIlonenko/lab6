@@ -23,11 +23,12 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class Server extends AllDirectives {
     private static int PORT;
-    private static ActorRef storageActor;
+    private static ActorRef Storage;
     private static ZooKeeper zoo;
     private static final String ROUTES = "routes";
     private static final String LOCALHOST = "localhost";
@@ -54,7 +55,7 @@ public class Server extends AllDirectives {
 
         ActorSystem system = ActorSystem.create(ROUTES);
         http = Http.get(system);
-        storageActor = system.actorOf(Props.create(storageActor.class));
+        Storage = system.actorOf(Props.create(Storage.class));
         final ActorMaterializer materializer = ActorMaterializer.create(system);
 
         Server app = new Server();
@@ -84,13 +85,22 @@ public class Server extends AllDirectives {
                                     System.out.println("Request got from " + Integer.toString(PORT) + "count = " + count);
                                     if (countNumber != 0) {
                                         try {
-                                            Future<Object> randomPort = CompletableFuture.completedFuture(Patterns.ask(storageActor, new PortRandomizer(Integer.toString(PORT)), 5000));
+                                            Future<Object> randomPort = CompletableFuture.completedFuture(Patterns.ask(Storage, new PortRandomizer(Integer.toString(PORT)), 5000));
                                             return complete(requestToServer(Integer.parseInt(randomPort.get().toString()), url, countNumber).toCompletableFuture().get());
-                                        } catch (InterruptedException e)
+                                        } catch (InterruptedException| ExecutionException e){
+                                            e.printStackTrace();
+                                            return complete("Error:" + e);
+                                        }
+                                    }
+                                    try {
+                                        return complete(requestToWebSite(url).toCompletableFuture().get());
+                                    } catch (InterruptedException | ExecutionException e) {
+                                        e.printStackTrace();
+                                        return complete("Error:" + e);
                                     }
                                 }))
                 )
-        )
+        );
     }
 
     CompletionStage<HttpResponse> requestToServer(int port, String url, int count){
