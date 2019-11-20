@@ -136,6 +136,7 @@ public class Server extends AllDirectives {
                                     int countNumber = Integer.parseInt(count);
                                     System.out.println("Request got from " + PORT + "count = " + count);
                                     if (countNumber != 0) {
+                                        System.out.println("Request got from " + PORT + "count = " + count);
                                         try {
                                             Future<Object> randomPort = Patterns.ask(Storage, new PortRandomizer(Integer.toString(PORT)), 5000);
                                             if (randomPort.isCompleted()){
@@ -160,7 +161,6 @@ public class Server extends AllDirectives {
     }
 
     CompletionStage<HttpResponse> requestToServer(int port, String url, int count){
-        System.out.println(count);
         try{
             return http.singleRequest(
                     HttpRequest.create("http://localhost:" + port + "/?url=" + url + "&count=" + (count - 1)));
