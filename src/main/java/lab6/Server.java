@@ -26,16 +26,17 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class Server extends AllDirectives {
-    private static String SERVERS = "servers";
-    private static String ERROR = "Error: ";
-    private static String URL = "url";
-    public static String COUNT = "count";
+    private static final String SERVERS = "servers";
+    private static final String ERROR = "Error: ";
+    private static final String URL = "url";
+    private static final String COUNT = "count";
     private static int PORT;
     private static ActorRef Storage;
     private static ZooKeeper zoo;
     private static final String ROUTES = "routes";
     private static final String LOCALHOST = "localhost";
-    private static final String SERVER_INFO = "\"Server online at http://localhost:8080/ \nPress RETURN to stop...\"";
+    private static final String SERVER_INFO = "\"Server online at http://localhost:";
+    private static final String PRESS_RETURN = "/ \nPress RETURN to stop...\"";
     private static Http http;
 
     private static void createZoo(int port) throws IOException, KeeperException, InterruptedException {
