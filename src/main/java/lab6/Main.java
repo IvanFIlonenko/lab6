@@ -73,7 +73,7 @@ public class Main {
                 wait();
             }
         } catch (InterruptedException e){
-            
+
         }
     }
 }
