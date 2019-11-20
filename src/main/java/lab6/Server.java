@@ -26,6 +26,8 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class Server extends AllDirectives {
+    private static String URL = "url";
+    private static String COUNT = "count";
     private static String ERROR = "Error: ";
     private static int PORT;
     private static ActorRef Storage;
@@ -124,8 +126,8 @@ public class Server extends AllDirectives {
     private Route route() {
         return concat(
                 get(
-                        () -> parameter("url", url ->
-                                parameter("count", count -> {
+                        () -> parameter(URL, url ->
+                                parameter(COUNT, count -> {
                                     int countNumber = Integer.parseInt(count);
                                     System.out.println("Request got from " + PORT + "| Count = " + count);
                                     if (countNumber != 0) {
