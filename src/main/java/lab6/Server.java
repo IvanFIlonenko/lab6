@@ -160,6 +160,7 @@ public class Server extends AllDirectives {
     }
 
     CompletionStage<HttpResponse> requestToServer(int port, String url, int count){
+        System.out.println(count);
         try{
             return http.singleRequest(
                     HttpRequest.create("http://localhost:" + port + "/?url=" + url + "&count=" + (count - 1)));
