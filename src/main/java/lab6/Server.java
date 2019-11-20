@@ -17,6 +17,7 @@ import akka.stream.javadsl.Flow;
 import org.apache.zookeeper.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -45,7 +46,9 @@ public class Server extends AllDirectives {
         zoo.getChildren("/servers", new Watcher() {
             @Override
             public void process(WatchedEvent event) {
-                if (event.getType() == Event.EventType.NodeChildrenChanged)
+                if (event.getType() == Event.EventType.NodeChildrenChanged){
+                    List<String> se
+                }
             }
         })
     }
