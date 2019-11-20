@@ -26,6 +26,7 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class Server extends AllDirectives {
+    private static String ERROR = "Error: ";
     private static int PORT;
     private static ActorRef Storage;
     private static ZooKeeper zoo;
@@ -58,11 +59,6 @@ public class Server extends AllDirectives {
                             serverPorts.add(new String(port));
                         }
                         Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
-                        try {
-                            TimeUnit.SECONDS.sleep(3);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
                         process(event);
                     }
                 }
@@ -91,11 +87,6 @@ public class Server extends AllDirectives {
                         serverPorts.add(new String(port));
                     }
                     Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
-                try {
-                    TimeUnit.SECONDS.sleep(3);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 process(event);
             }
         });
@@ -130,33 +121,28 @@ public class Server extends AllDirectives {
 
     }
 
-    private Route route(){
+    private Route route() {
         return concat(
                 get(
                         () -> parameter("url", url ->
                                 parameter("count", count -> {
                                     int countNumber = Integer.parseInt(count);
-                                    System.out.println("Request got from " + PORT + "count = " + count);
+                                    System.out.println("Request got from " + PORT + "| Count = " + count);
                                     if (countNumber != 0) {
                                         try {
                                             Future<Object> randomPort = Patterns.ask(Storage, new PortRandomizer(Integer.toString(PORT)), 5000);
-                                            int reply = (int)Await.result(randomPort, Duration.create(5, TimeUnit.SECONDS));
-                                            System.out.println(reply);
+                                            int reply = (int) Await.result(randomPort, Duration.create(5, TimeUnit.SECONDS));
                                             return complete(requestToServer(reply, url, countNumber).toCompletableFuture().get());
-                                        } catch (InterruptedException| ExecutionException e){
-                                            e.printStackTrace();
-                                            return complete("Error:" + e);
                                         } catch (Exception e) {
                                             e.printStackTrace();
-                                            return complete("Error:" + e);
+                                            return complete(ERROR + e);
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         try {
                                             return complete(requestToWebSite(url).toCompletableFuture().get());
                                         } catch (InterruptedException | ExecutionException e) {
                                             e.printStackTrace();
-                                            return complete("Error:" + e);
+                                            return complete(ERROR + e);
                                         }
                                     }
                                 }))
@@ -169,7 +155,7 @@ public class Server extends AllDirectives {
             return http.singleRequest(
                     HttpRequest.create("http://localhost:" + port + "/?url=" + url + "&count=" + (count - 1)));
         } catch (Exception e){
-            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error:" + e));
+            return CompletableFuture.completedFuture(HttpResponse.create().withEntity(ERROR + e));
         }
     }
 
@@ -177,7 +163,7 @@ public class Server extends AllDirectives {
         try{
             return http.singleRequest(HttpRequest.create(url));
         }catch (Exception e){
-            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error:" + e));
+            return CompletableFuture.completedFuture(HttpResponse.create().withEntity(ERROR + e));
         }
     }
 }
