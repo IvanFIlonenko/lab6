@@ -126,7 +126,7 @@ public class Server extends AllDirectives {
                 materializer
         );
 
-        System.out.println(SERVER_INFO);
+        System.out.println(SERVER_INFO + PORT + PRESS_RETURN);
         System.in.read();
 
         binding
