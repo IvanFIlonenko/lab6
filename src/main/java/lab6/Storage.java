@@ -17,7 +17,7 @@ public class Storage extends AbstractActor {
         }).match(PortRandomizer.class, msg ->{
             Random random = new Random();
             int randomIndex = random.nextInt(serverPorts.size());
-            System.out.println(randomIndex);
+            System.out.println("haha");
             while (serverPorts.get(randomIndex).equals(msg.getPort())){
                 randomIndex = random.nextInt(serverPorts.size());
             }
