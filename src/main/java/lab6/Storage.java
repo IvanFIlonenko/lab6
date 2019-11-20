@@ -13,11 +13,13 @@ public class Storage extends AbstractActor {
 
     public Receive createReceive() {
         return ReceiveBuilder.create().match(ServerMessage.class, msg->{
+            System.out.println("1111");
             serverPorts = msg.getServerPorts();
+            System.out.println(serverPorts.size());
         }).match(PortRandomizer.class, msg ->{
             Random random = new Random();
+            System.out.println("22222");
             int randomIndex = random.nextInt(serverPorts.size());
-            System.out.println("haha");
             while (serverPorts.get(randomIndex).equals(msg.getPort())){
                 randomIndex = random.nextInt(serverPorts.size());
             }
