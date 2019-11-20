@@ -81,7 +81,7 @@ public class Server extends AllDirectives {
         http = Http.get(system);
         Storage = system.actorOf(Props.create(Storage.class));
         final ActorMaterializer materializer = ActorMaterializer.create(system);
-        System.out.println("1");
+
         Server app = new Server();
 
         final Flow<HttpRequest, HttpResponse, NotUsed> routeFlow = app.route().flow(system, materializer);
@@ -132,7 +132,7 @@ public class Server extends AllDirectives {
             return http.singleRequest(
                     HttpRequest.create("http://localhost:" + port + "/?url=" + url + "&count=" + (count - 1)));
         } catch (Exception e){
-            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error121212:" + e));
+            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error:" + e));
         }
     }
 
@@ -140,7 +140,7 @@ public class Server extends AllDirectives {
         try{
             return http.singleRequest(HttpRequest.create(url));
         }catch (Exception e){
-            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error3333333333:" + e));
+            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error:" + e));
         }
     }
 }
