@@ -35,7 +35,7 @@ public class Server extends AllDirectives {
     private static ZooKeeper zoo;
     private static final String ROUTES = "routes";
     private static final String LOCALHOST = "localhost";
-    private static final String SERVER_INFO = "\"Server online at http://localhost:8080/\\nPress RETURN to stop...\"";
+    private static final String SERVER_INFO = "\"Server online at http://localhost:8080/ \nPress RETURN to stop...\"";
     private static Http http;
 
     private static void createZoo(int port) throws IOException, KeeperException, InterruptedException {
