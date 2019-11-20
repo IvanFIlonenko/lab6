@@ -7,5 +7,7 @@ public class PortRandomizer {
         this.port = port;
     }
 
-    public 
+    public String getPort(){
+        return this.port;
+    }
 }
