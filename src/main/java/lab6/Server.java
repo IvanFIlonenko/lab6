@@ -58,11 +58,11 @@ public class Server extends AllDirectives {
                             serverPorts.add(new String(port));
                         }
                         Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
-//                        try {
-//                            TimeUnit.SECONDS.sleep(3);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
+                        try {
+                            TimeUnit.SECONDS.sleep(3);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         process(event);
                     }
                 }
@@ -91,11 +91,11 @@ public class Server extends AllDirectives {
                         serverPorts.add(new String(port));
                     }
                     Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
-//                try {
-//                    TimeUnit.SECONDS.sleep(3);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 process(event);
             }
         });
