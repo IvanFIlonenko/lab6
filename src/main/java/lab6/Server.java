@@ -26,6 +26,10 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class Server extends AllDirectives {
+    private static String SERVERS = "servers";
+    private static String ERROR = "Error: ";
+    private static String URL = "url";
+    public static String COUNT = "count";
     private static int PORT;
     private static ActorRef Storage;
     private static ZooKeeper zoo;
@@ -43,7 +47,7 @@ public class Server extends AllDirectives {
                     public void process(WatchedEvent event) {
                         List<String> servers = new ArrayList<>();
                         try{
-                            servers = zoo.getChildren("/servers", true);
+                            servers = zoo.getChildren("/" + SERVERS, true);
                         } catch (InterruptedException | KeeperException  e) {
                             e.printStackTrace();
                         }
@@ -51,7 +55,7 @@ public class Server extends AllDirectives {
                         for (String s: servers) {
                             byte[] port = new byte[0];
                             try{
-                                port = zoo.getData("/servers/" + s, false, null);
+                                port = zoo.getData("/" + SERVERS + "/" + s, false, null);
                             } catch (InterruptedException | KeeperException e) {
                                 e.printStackTrace();
                             }
@@ -67,16 +71,16 @@ public class Server extends AllDirectives {
                     }
                 }
         );
-        zoo.create("/servers/" + port,
+        zoo.create("/" + SERVERS + "/" + port,
                 Integer.toString(port).getBytes(),
                 ZooDefs.Ids.OPEN_ACL_UNSAFE,
                 CreateMode.EPHEMERAL_SEQUENTIAL);
-        zoo.getChildren("/servers", new Watcher() {
+        zoo.getChildren("/" + SERVERS, new Watcher() {
             @Override
             public void process(WatchedEvent event) {
                     List<String> servers = new ArrayList<>();
                     try{
-                        servers = zoo.getChildren("/servers", true);
+                        servers = zoo.getChildren("/" + SERVERS, true);
                     } catch (InterruptedException | KeeperException  e) {
                         e.printStackTrace();
                     }
@@ -84,7 +88,7 @@ public class Server extends AllDirectives {
                     for (String s: servers) {
                         byte[] port = new byte[0];
                         try{
-                            port = zoo.getData("/servers/" + s, false, null);
+                            port = zoo.getData("/" + SERVERS + "/" + s, false, null);
                         } catch (InterruptedException | KeeperException e) {
                             e.printStackTrace();
                         }
@@ -133,8 +137,8 @@ public class Server extends AllDirectives {
     private Route route(){
         return concat(
                 get(
-                        () -> parameter("url", url ->
-                                parameter("count", count -> {
+                        () -> parameter(URL, url ->
+                                parameter(COUNT, count -> {
                                     int countNumber = Integer.parseInt(count);
                                     System.out.println("Request got from " + PORT + "| Count = " + count);
                                     if (countNumber != 0) {
@@ -144,7 +148,7 @@ public class Server extends AllDirectives {
                                             return complete(requestToServer(reply, url, countNumber).toCompletableFuture().get());
                                         } catch (Exception e){
                                             e.printStackTrace();
-                                            return complete("Error:" + e);
+                                            return complete(ERROR + e);
                                         }
                                     }
                                     else {
@@ -152,7 +156,7 @@ public class Server extends AllDirectives {
                                             return complete(requestToWebSite(url).toCompletableFuture().get());
                                         } catch (InterruptedException | ExecutionException e) {
                                             e.printStackTrace();
-                                            return complete("Error:" + e);
+                                            return complete(ERROR + e);
                                         }
                                     }
                                 }))
@@ -163,9 +167,9 @@ public class Server extends AllDirectives {
     CompletionStage<HttpResponse> requestToServer(int port, String url, int count){
         try{
             return http.singleRequest(
-                    HttpRequest.create("http://localhost:" + port + "/?url=" + url + "&count=" + (count - 1)));
+                    HttpRequest.create("http://localhost:" + port + "/?" + URL + "=" + url + "&" + COUNT + "=" + (count - 1)));
         } catch (Exception e){
-            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error:" + e));
+            return CompletableFuture.completedFuture(HttpResponse.create().withEntity(ERROR + e));
         }
     }
 
@@ -173,7 +177,7 @@ public class Server extends AllDirectives {
         try{
             return http.singleRequest(HttpRequest.create(url));
         }catch (Exception e){
-            return CompletableFuture.completedFuture(HttpResponse.create().withEntity("Error:" + e));
+            return CompletableFuture.completedFuture(HttpResponse.create().withEntity(ERROR + e));
         }
     }
 }
