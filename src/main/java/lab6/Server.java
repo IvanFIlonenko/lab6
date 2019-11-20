@@ -55,7 +55,6 @@ public class Server extends AllDirectives {
                             }
                             serverPorts.add(new String(port));
                         }
-                        System.out.println(serverPorts.size());
                         Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
                         try {
                             TimeUnit.SECONDS.sleep(3);
@@ -89,7 +88,6 @@ public class Server extends AllDirectives {
                         }
                         serverPorts.add(new String(port));
                     }
-                    System.out.println(serverPorts.size());
                     Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
                 try {
                     TimeUnit.SECONDS.sleep(3);
