@@ -41,6 +41,7 @@ public class Server extends AllDirectives {
                 2000,
                 a -> {}
         );
+        zoo.create("/servers","parent".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         zoo.create("/servers/" + port,
                 Integer.toString(port).getBytes(),
                 ZooDefs.Ids.OPEN_ACL_UNSAFE,
@@ -52,7 +53,7 @@ public class Server extends AllDirectives {
         PORT = in.nextInt();
 
         createZoo(PORT);
-        zoo.create("/servers","parent".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+
         ActorSystem system = ActorSystem.create(ROUTES);
         http = Http.get(system);
         Storage = system.actorOf(Props.create(Storage.class));
