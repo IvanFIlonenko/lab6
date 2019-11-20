@@ -85,8 +85,8 @@ public class Server extends AllDirectives {
                                     if (countNumber != 0) {
                                         try {
                                             Future<Object> randomPort = CompletableFuture.completedFuture(Patterns.ask(storageActor, new PortRandomizer(Integer.toString(PORT)), 5000));
-                                            return complete(fetch)
-                                        }
+                                            return complete(requestToServer(Integer.parseInt(randomPort.get().toString()), url, countNumber).toCompletableFuture().get());
+                                        } catch (InterruptedException e)
                                     }
                                 }))
                 )
