@@ -72,6 +72,7 @@ public class Server extends AllDirectives {
                     }
                 }
         );
+//        zoo.create("/servers","parent".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         zoo.create("/" + SERVERS + "/" + port,
                 Integer.toString(port).getBytes(),
                 ZooDefs.Ids.OPEN_ACL_UNSAFE,
