@@ -46,28 +46,30 @@ public class Server extends AllDirectives {
                 new Watcher() {
                     @Override
                     public void process(WatchedEvent event) {
-                        List<String> servers = new ArrayList<>();
-                        try{
-                            servers = zoo.getChildren("/" + SERVERS, true);
-                        } catch (InterruptedException | KeeperException  e) {
-                            e.printStackTrace();
-                        }
-                        List<String> serverPorts = new ArrayList<>();
-                        for (String s: servers) {
-                            byte[] port = new byte[0];
-                            try{
-                                port = zoo.getData("/" + SERVERS + "/" + s, false, null);
+                        if (event.getType() == Event.EventType.NodeChildrenChanged) {
+                            List<String> servers = new ArrayList<>();
+                            try {
+                                servers = zoo.getChildren("/" + SERVERS, true);
                             } catch (InterruptedException | KeeperException e) {
                                 e.printStackTrace();
                             }
-                            serverPorts.add(new String(port));
+                            List<String> serverPorts = new ArrayList<>();
+                            for (String s : servers) {
+                                byte[] port = new byte[0];
+                                try {
+                                    port = zoo.getData("/" + SERVERS + "/" + s, false, null);
+                                } catch (InterruptedException | KeeperException e) {
+                                    e.printStackTrace();
+                                }
+                                serverPorts.add(new String(port));
+                            }
+                            Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
                         }
-                        Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
-                        try {
-                            TimeUnit.SECONDS.sleep(3);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            TimeUnit.SECONDS.sleep(3);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
                         process(event);
                     }
                 }
@@ -80,29 +82,30 @@ public class Server extends AllDirectives {
         zoo.getChildren("/" + SERVERS, new Watcher() {
             @Override
             public void process(WatchedEvent event) {
-                if ()
-                    List<String> servers = new ArrayList<>();
-                    try{
-                        servers = zoo.getChildren("/" + SERVERS, true);
-                    } catch (InterruptedException | KeeperException  e) {
-                        e.printStackTrace();
-                    }
-                    List<String> serverPorts = new ArrayList<>();
-                    for (String s: servers) {
-                        byte[] port = new byte[0];
-                        try{
-                            port = zoo.getData("/" + SERVERS + "/" + s, false, null);
-                        } catch (InterruptedException | KeeperException e) {
-                            e.printStackTrace();
-                        }
-                        serverPorts.add(new String(port));
-                    }
-                    Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
-                try {
-                    TimeUnit.SECONDS.sleep(3);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                 if (event.getType() == Event.EventType.NodeChildrenChanged) {
+                     List<String> servers = new ArrayList<>();
+                     try {
+                         servers = zoo.getChildren("/" + SERVERS, true);
+                     } catch (InterruptedException | KeeperException e) {
+                         e.printStackTrace();
+                     }
+                     List<String> serverPorts = new ArrayList<>();
+                     for (String s : servers) {
+                         byte[] port = new byte[0];
+                         try {
+                             port = zoo.getData("/" + SERVERS + "/" + s, false, null);
+                         } catch (InterruptedException | KeeperException e) {
+                             e.printStackTrace();
+                         }
+                         serverPorts.add(new String(port));
+                     }
+                     Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
+                 }
+//                try {
+//                    TimeUnit.SECONDS.sleep(3);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
                 process(event);
             }
         });
