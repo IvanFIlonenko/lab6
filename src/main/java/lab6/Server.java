@@ -80,6 +80,7 @@ public class Server extends AllDirectives {
         zoo.getChildren("/" + SERVERS, new Watcher() {
             @Override
             public void process(WatchedEvent event) {
+                if ()
                     List<String> servers = new ArrayList<>();
                     try{
                         servers = zoo.getChildren("/" + SERVERS, true);
