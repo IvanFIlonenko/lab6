@@ -83,7 +83,7 @@ public class Server extends AllDirectives {
             }
             Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
             try {
-                TimeUnit.SECONDS.sleep(3);
+                TimeUnit.SECONDS.sleep(5);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
