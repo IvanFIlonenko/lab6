@@ -26,8 +26,15 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class Server extends AllDirectives {
-    private static final String slash = "/";
-    private static final String zooAdress = "127.0.0.1:2181";
+    private static final String QUESTION = "?";
+    private static final String AMPERSAND = "&";
+    private static final String EQUALS = "=";
+    private static final String COLON = ":";
+    private static final String HTTP = "http://";
+    private static final String COUNT2 = "| Count = ";
+    private static final String REQUEST_GOT_FROM = "Request got from ";
+    private static final String SLASH = "/";
+    private static final String ZOO_ADDRESS = "127.0.0.1:2181";
     private static final String SERVERS = "servers";
     private static final String ERROR = "Error: ";
     private static final String URL = "url";
@@ -43,16 +50,16 @@ public class Server extends AllDirectives {
 
     private static void createZoo(int port) throws IOException, KeeperException, InterruptedException {
         zoo = new ZooKeeper(
-                zooAdress,
+                ZOO_ADDRESS,
                 2000,
                 new CustomWathcer()
         );
 //        zoo.create("/servers","parent".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-        zoo.create(slash + SERVERS + slash + port,
+        zoo.create(SLASH + SERVERS + SLASH + port,
                 Integer.toString(port).getBytes(),
                 ZooDefs.Ids.OPEN_ACL_UNSAFE,
                 CreateMode.EPHEMERAL_SEQUENTIAL);
-        zoo.getChildren(slash + SERVERS, new CustomWathcer());
+        zoo.getChildren(SLASH + SERVERS, new CustomWathcer());
     }
 
     public static class CustomWathcer implements Watcher {
@@ -60,7 +67,7 @@ public class Server extends AllDirectives {
         public void process(WatchedEvent event) {
             List<String> servers = new ArrayList<>();
             try {
-                servers = zoo.getChildren(slash + SERVERS, true);
+                servers = zoo.getChildren(SLASH + SERVERS, true);
             } catch (InterruptedException | KeeperException e) {
                 e.printStackTrace();
             }
@@ -68,7 +75,7 @@ public class Server extends AllDirectives {
             for (String s : servers) {
                 byte[] port = new byte[0];
                 try {
-                    port = zoo.getData(slash + SERVERS + slash + s, false, null);
+                    port = zoo.getData(SLASH + SERVERS + SLASH + s, false, null);
                 } catch (InterruptedException | KeeperException e) {
                     e.printStackTrace();
                 }
@@ -119,7 +126,7 @@ public class Server extends AllDirectives {
                         () -> parameter(URL, url ->
                                 parameter(COUNT, count -> {
                                     int countNumber = Integer.parseInt(count);
-                                    System.out.println("Request got from " + PORT + "| Count = " + count);
+                                    System.out.println(REQUEST_GOT_FROM + PORT + COUNT2 + count);
                                     if (countNumber != 0) {
                                         try {
                                             Future<Object> randomPort = Patterns.ask(Storage, new PortRandomizer(Integer.toString(PORT)), 5000);
@@ -146,7 +153,7 @@ public class Server extends AllDirectives {
     CompletionStage<HttpResponse> requestToServer(int port, String url, int count){
         try{
             return http.singleRequest(
-                    HttpRequest.create("http://localhost:" + port + "/?" + URL + "=" + url + "&" + COUNT + "=" + (count - 1)));
+                    HttpRequest.create(HTTP + LOCALHOST + COLON + port + SLASH + QUESTION + URL + EQUALS + url + AMPERSAND + COUNT + EQUALS + (count - 1)));
         } catch (Exception e){
             return CompletableFuture.completedFuture(HttpResponse.create().withEntity(ERROR + e));
         }
