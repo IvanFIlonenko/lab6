@@ -26,6 +26,8 @@ import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class Server extends AllDirectives {
+    private static final String slash = "/";
+    private static final String zooAdress = "127.0.0.1:2181";
     private static final String SERVERS = "servers";
     private static final String ERROR = "Error: ";
     private static final String URL = "url";
@@ -41,16 +43,16 @@ public class Server extends AllDirectives {
 
     private static void createZoo(int port) throws IOException, KeeperException, InterruptedException {
         zoo = new ZooKeeper(
-                "127.0.0.1:2181",
+                zooAdress,
                 2000,
                 new CustomWathcer()
         );
 //        zoo.create("/servers","parent".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-        zoo.create("/" + SERVERS + "/" + port,
+        zoo.create(slash + SERVERS + slash + port,
                 Integer.toString(port).getBytes(),
                 ZooDefs.Ids.OPEN_ACL_UNSAFE,
                 CreateMode.EPHEMERAL_SEQUENTIAL);
-        zoo.getChildren("/" + SERVERS, new CustomWathcer());
+        zoo.getChildren(slash + SERVERS, new CustomWathcer());
     }
 
     public static class CustomWathcer implements Watcher {
@@ -58,7 +60,7 @@ public class Server extends AllDirectives {
         public void process(WatchedEvent event) {
             List<String> servers = new ArrayList<>();
             try {
-                servers = zoo.getChildren("/" + SERVERS, true);
+                servers = zoo.getChildren(slash + SERVERS, true);
             } catch (InterruptedException | KeeperException e) {
                 e.printStackTrace();
             }
@@ -66,7 +68,7 @@ public class Server extends AllDirectives {
             for (String s : servers) {
                 byte[] port = new byte[0];
                 try {
-                    port = zoo.getData("/" + SERVERS + "/" + s, false, null);
+                    port = zoo.getData(slash + SERVERS + slash + s, false, null);
                 } catch (InterruptedException | KeeperException e) {
                     e.printStackTrace();
                 }
