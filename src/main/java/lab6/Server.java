@@ -43,46 +43,44 @@ public class Server extends AllDirectives {
         zoo = new ZooKeeper(
                 "127.0.0.1:2181",
                 2000,
-                new Watcher() {
-                    @Override
-                    public void process(WatchedEvent event) {
-                        List<String> servers = new ArrayList<>();
-                        try{
-                            servers = zoo.getChildren("/" + SERVERS, true);
-                        } catch (InterruptedException | KeeperException  e) {
-                            e.printStackTrace();
-                        }
-                        List<String> serverPorts = new ArrayList<>();
-                        for (String s: servers) {
-                            byte[] port = new byte[0];
-                            try{
-                                port = zoo.getData("/" + SERVERS + "/" + s, false, null);
-                            } catch (InterruptedException | KeeperException e) {
-                                e.printStackTrace();
-                            }
-                            serverPorts.add(new String(port));
-                        }
-                        Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
-                        try {
-                            TimeUnit.SECONDS.sleep(3);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        process(event);
-                    }
-                }
+                new CustomWathcer()
         );
 //        zoo.create("/servers","parent".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         zoo.create("/" + SERVERS + "/" + port,
                 Integer.toString(port).getBytes(),
                 ZooDefs.Ids.OPEN_ACL_UNSAFE,
                 CreateMode.EPHEMERAL_SEQUENTIAL);
-        zoo.getChildren("/" + SERVERS, new Watcher() {
-            @Override
-        });
+        zoo.getChildren("/" + SERVERS, new CustomWathcer());
     }
 
-
+    public static class CustomWathcer implements Watcher {
+        @Override
+        public void process(WatchedEvent event) {
+            List<String> servers = new ArrayList<>();
+            try {
+                servers = zoo.getChildren("/" + SERVERS, true);
+            } catch (InterruptedException | KeeperException e) {
+                e.printStackTrace();
+            }
+            List<String> serverPorts = new ArrayList<>();
+            for (String s : servers) {
+                byte[] port = new byte[0];
+                try {
+                    port = zoo.getData("/" + SERVERS + "/" + s, false, null);
+                } catch (InterruptedException | KeeperException e) {
+                    e.printStackTrace();
+                }
+                serverPorts.add(new String(port));
+            }
+            Storage.tell(new ServerMessage(serverPorts), ActorRef.noSender());
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            process(event);
+        }
+    }
 
     public static void main(String[] args) throws InterruptedException, IOException, KeeperException {
         Scanner in = new Scanner(System.in);
